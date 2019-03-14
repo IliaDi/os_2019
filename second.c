@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     else if (c1 == 0) {//c1 code
 	    pid1 = getpid();
 		signal(SIGCONT, printFork );
-		pause();		
+		kill(getpid(), SIGSTOP);		
         exit(0);
     } else {
         c2 = fork();
@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
         else if (c2 == 0) {//c2 code
 		    pid2 = getpid();
 			signal(SIGCONT, printFork );
-			pause();
+			kill(getpid(), SIGSTOP);
             exit(0);
         } else {
             c3 = fork();
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
             else if (c3 == 0) {//c3 code
 			    pid3 = getpid();
 				signal(SIGCONT, printFork );
-				pause();
+				kill(getpid(), SIGSTOP);
                 exit(0);
             } else {
                 c4 = fork();
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
                 else if (c4 == 0) {//c4 code
 				    pid4 = getpid();
 					signal(SIGCONT, printFork );
-					pause();
+					kill(getpid(), SIGSTOP);
                     exit(0);
                 } else {
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
                     else if (c5 == 0) {//c5 code
 					    pid5 = getpid();
 						signal(SIGCONT, printFork );
-						pause();
+						kill(getpid(), SIGSTOP);
                         exit(0);
                     } else {
                         //F
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 							    else {printf("There are only 5 children\n");}
 								if(check) {kill(mypid, SIGCONT);
 								sleep(3);
-								if(j!=3){kill(mypid, SIGCHLD);}
+								if(j!=3){kill(mypid, SIGSTOP);}
 								else{kill(mypid, SIGTERM);}}
 								
 							}
