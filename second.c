@@ -19,7 +19,7 @@ void printFork() {
 int main(int argc, char **argv) {
 	int status;
     //pid_t pid1, pid2 ,pid3,pid4,pid5;
-    pid_t c1, c2, c3, c4, c5,mypid;
+    pid_t c1, c2, c3, c4, c5, mypid;
 
     c1 = fork();
     if (c1 < 0) { printf("fork produced error"); }
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
 								else if (strcmp(argv[i],"5")==0){ mypid= c5; /*curri=5;*/ }
 							    else {printf("There are only 5 children\n");check=false;}
 								if(check) {kill(mypid, SIGCONT);
-								sleep(5);
+								sleep(3);
 								/*if(j!=3){kill(mypid, SIGSTOP);}
 								else{kill(mypid, SIGTERM);}}*/
 							    kill(mypid, SIGTERM);}
