@@ -66,13 +66,13 @@ int main(int argc, char **argv) {
 						for (int j=0; j<4; j++){
 							for(int i=1; i<argc;i++){
 								myn=j+1;
-								bool check=false;
-								if (strcmp(argv[i],"1")==0){ mypid=pid1; curri=1; check=true;}
-								else if (strcmp(argv[i],"2")==0){ mypid=pid2; curri=2; check=true;}
-								else if (strcmp(argv[i],"3")==0){ mypid=pid3; curri=3; check=true;}
-								else if (strcmp(argv[i],"4")==0){ mypid=pid4; curri=4; check=true;}
-								else if (strcmp(argv[i],"5")==0){ mypid=pid5; curri=5; check=true;}
-							    else {printf("There are only 5 children\n");}
+								bool check=true;
+								if (strcmp(argv[i],"1")==0){ mypid=pid1; curri=1; }
+								else if (strcmp(argv[i],"2")==0){ mypid=pid2; curri=2;}
+								else if (strcmp(argv[i],"3")==0){ mypid=pid3; curri=3; }
+								else if (strcmp(argv[i],"4")==0){ mypid=pid4; curri=4; }
+								else if (strcmp(argv[i],"5")==0){ mypid=pid5; curri=5; }
+							    else {printf("There are only 5 children\n");check=false;}
 								if(check) {kill(mypid, SIGCONT);
 								sleep(3);
 								if(j!=3){kill(mypid, SIGSTOP);}
