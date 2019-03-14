@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
 								else if (strcmp(argv[i],"5")==0){ mypid= c5; /*curri=5;*/ }
 							    else {printf("There are only 5 children\n");check=false;}
 								if(check) {kill(mypid, SIGCONT);
-								sleep(3);
+								sleep(5);
 								/*if(j!=3){kill(mypid, SIGSTOP);}
 								else{kill(mypid, SIGTERM);}}*/
 							    kill(mypid, SIGTERM);}
