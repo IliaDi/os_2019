@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 //h timi tou n stis epanalipseis den allazei
-int n=1;
+int n=0;
 
 void sighandler(int);
 
@@ -75,8 +75,8 @@ int main(int argc, char **argv) {
                     } else {  
                         //F
 						for (int j=0; j<4; j++){
-							n=j+1;
-							printf("%d -th iteration\n",n);
+							//n=j+1;
+							printf("%d -th iteration\n",j+1);
 							
 							for(int i=1; i<argc; i++){
 								bool check=true;
@@ -115,6 +115,7 @@ int main(int argc, char **argv) {
 
 void sighandler(int signum){
 	printf("Caught cont signal\n");
+	n++;
 	return;
 }
 
