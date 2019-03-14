@@ -19,7 +19,7 @@ void printFork() {
 int main(int argc, char **argv) {
 	int status;
     //pid_t pid1, pid2 ,pid3,pid4,pid5;
-    pid_t c1, c2, c3, c4, c5;
+    pid_t c1, c2, c3, c4, c5,mypid;
 
     c1 = fork();
     if (c1 < 0) { printf("fork produced error"); }
@@ -72,11 +72,11 @@ int main(int argc, char **argv) {
 							for(int i=1; i<argc;i++){
 								//myn=j+1;
 								bool check=true;
-								if (strcmp(argv[i],"1")==0){ mypid=pid1; /*curri=1;*/ }
-								else if (strcmp(argv[i],"2")==0){ mypid=pid2; /*curri=2;*/}
-								else if (strcmp(argv[i],"3")==0){ mypid=pid3; /*curri=3;*/ }
-								else if (strcmp(argv[i],"4")==0){ mypid=pid4; /*curri=4;*/ }
-								else if (strcmp(argv[i],"5")==0){ mypid=pid5; /*curri=5;*/ }
+								if (strcmp(argv[i],"1")==0){ mypid= c1; /*curri=1;*/ }
+								else if (strcmp(argv[i],"2")==0){ mypid= c2; /*curri=2;*/}
+								else if (strcmp(argv[i],"3")==0){ mypid= c3; /*curri=3;*/ }
+								else if (strcmp(argv[i],"4")==0){ mypid= c4; /*curri=4;*/ }
+								else if (strcmp(argv[i],"5")==0){ mypid= c5; /*curri=5;*/ }
 							    else {printf("There are only 5 children\n");check=false;}
 								if(check) {kill(mypid, SIGCONT);
 								sleep(5);
