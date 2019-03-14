@@ -7,13 +7,15 @@
 #include <string.h>
 #include <stdbool.h>
 
-//opoia diergasia kaleitai prwth den lamvanei to signal
+//h timi tou n stis epanalipseis den allazei
+int n=1;
 
 void sighandler(int);
 
 int main(int argc, char **argv) {
 	int status;
     pid_t c1, c2, c3, c4, c5, mypid;
+	
 
     c1 = fork();
     if (c1 < 0) { printf("fork produced error"); }
@@ -21,7 +23,7 @@ int main(int argc, char **argv) {
 	    signal(SIGCONT, sighandler);
 	    pause();
 		while(1){
-			printf("Child1 %d is executed\n", getpid());
+			printf("Child1 %d is executed %d\n", getpid() ,n);
 			sleep(1);
 		}
         exit(0);
@@ -32,7 +34,7 @@ int main(int argc, char **argv) {
 			signal(SIGCONT, sighandler);
 	        pause();
 			while(1){
-			    printf("Child2 %d is executed\n", getpid());
+			    printf("Child2 %d is executed %d\n", getpid() , n);
 			    sleep(1);
 		    }
             exit(0);
@@ -43,7 +45,7 @@ int main(int argc, char **argv) {
 			    signal(SIGCONT, sighandler);
 	            pause();
 				while(1){
-			        printf("Child1 %d is executed\n", getpid());
+			        printf("Child3 %d is executed %d\n", getpid(), n);
 			        sleep(1);
 		        }
                 exit(0);
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
 				    signal(SIGCONT, sighandler);
 	                pause();
 					while(1){
-			            printf("Child1 %d is executed\n", getpid());
+			            printf("Child4 %d is executed %d\n", getpid() , n);
 			            sleep(1);
 		             }
                     exit(0);
@@ -66,14 +68,16 @@ int main(int argc, char **argv) {
 					    signal(SIGCONT, sighandler);
 	                    pause();
 						while(1){
-			                printf("Child1 %d is executed\n", getpid());
+			                printf("Child5 %d is executed %d\n", getpid(), n);
 			                sleep(1);
 		                }
                         exit(0);
                     } else {  
                         //F
 						for (int j=0; j<4; j++){
-							printf("%d -th iteration\n",j);
+							n=j+1;
+							printf("%d -th iteration\n",n);
+							
 							for(int i=1; i<argc; i++){
 								bool check=true;
 								if (strcmp(argv[i],"1")==0){ mypid= c1; }
