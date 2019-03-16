@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-//h timi tou n stis epanalipseis den allazei
 int n=0;
 
 void sighandler(int);
@@ -76,7 +75,7 @@ int main(int argc, char **argv) {
                         //F
 						for (int j=0; j<4; j++){
 							//n=j+1;
-							printf("%d -th iteration\n",j+1);
+							//printf("%d -th iteration\n",j+1);
 							
 							for(int i=1; i<argc; i++){
 								bool check=true;
@@ -88,10 +87,15 @@ int main(int argc, char **argv) {
 							    else {printf("There are only 5 children\n");check=false;}
 								if(check) {
 								kill(mypid, SIGCONT);
-								printf("continued id %d\n",mypid);
+								//printf("continued id %d\n",mypid);
 								sleep(3);
 								if(j==3){ kill(mypid, SIGTERM);}
 							    else {	kill(mypid, SIGSTOP); }
+								}
+								if(check && j==0 && i==1){
+								kill(mypid, SIGCONT);
+								sleep(3);
+								kill(mypid, SIGSTOP);
 								}
 								
 							}
@@ -114,7 +118,7 @@ int main(int argc, char **argv) {
 }
 
 void sighandler(int signum){
-	printf("Caught cont signal\n");
+	//printf("Caught cont signal\n");
 	n++;
 	return;
 }
