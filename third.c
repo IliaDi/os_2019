@@ -15,9 +15,8 @@
 int main(int argc, char **argv) {
 	int status;
 	int res, nbytes,l, temp; 
-	int n = argv[1];
-	int k = argv[2];
-	char string[];
+	int n = atoi(argv[1]);
+	int k = atoi(argv[2]);
 	pid_t c[n];
 	char readbuffer[80];
 	int pd[n][2];
@@ -32,9 +31,10 @@ int main(int argc, char **argv) {
 			if (l<=k){
 			close(pd[i][1]);
 			nbytes=read(pd[i][0] , readbuffer , sizeof(readbuffer));
-			temp = atoi(nbytes);
+			temp = atoi(readbuffer); //string->int
 			res=temp*l;
-			string = stoi(res);
+			char string[12] ; //int->string
+			sprintf(string, "%d", res);
 			l++;
 			if(i<n-1){
 				close(pd[i+1][0]);
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 			//γράψε στην c[0] 1	
 			close(pd[0][0]);
 			l=1;
-			string[]="1";
+			char string[]="1";
 			write(pd[0][1], string, (strlen(string)+1));
 			
 		    wait(&status);
