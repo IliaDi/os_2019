@@ -33,7 +33,7 @@ int main()
     else if (p > 0) 
     { 
         close(fd[0]);  // Close reading end of first pipe 
-        my_str="hey";
+        strcpy(my_str,"hey");
         // Write input string and close writing end of first 
         // pipe. 
         write(fd[1], my_str, strlen(my_str)+1); 
@@ -50,7 +50,7 @@ int main()
   
         // Read a string using first pipe 
         char concat_str[100]; 
-        read(fd1[0], concat_str, 100); 
+        read(fd[0], concat_str, 100); 
   
         exit(0); 
     } 

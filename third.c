@@ -21,14 +21,17 @@ int main(int argc, char **argv) {
 	char readbuffer[80];
 	int pd[n][2];
 	for (int i=0; i<n; i++){
-		pipe(pd[i]); //pd[i][0]: read , pd[i][1]: write
+		if(pipe(pd[i]) == -1){
+			printf("error with pipe");
+		} //pd[i][0]: read , pd[i][1]: write
 	}
 	for (int i=0; i<n; i++){
 		c[i]=fork();
 		if (c[i] < 0) { printf("fork produced error"); }
         else if (c[i] == 0) {//c[i] code
-		    //ΠΩΣ ΘΑ ΜΕΤΡΉΣΩ ΤΙΣ Κ ενεργοποιήσεις? έστω l
-			if (l<=k){
+		    printf("this is the child %d \n",i);
+		   
+			/*if (l<=k){
 			close(pd[i][1]);
 			nbytes=read(pd[i][0] , readbuffer , sizeof(readbuffer));
 			temp = atoi(readbuffer); //string->int
@@ -45,19 +48,20 @@ int main(int argc, char **argv) {
 				close(pd[0][0]);
 				write(pd[0][1] , string , (strlen(string)+1));
 			}
-			}
+			}*/
             exit(0);
         } 
 	    else {//F 
 		    sleep(1);
 			//γράψε στην c[0] 1	
-			close(pd[0][0]);
 			l=1;
 			char string[]="1";
-			write(pd[0][1], string, (strlen(string)+1));
+			close(pd[0][0]); 
 			
+			//write(pd[0][1], string, strlen(string)+1);
+			close(pd[0][1]);
+			printf("this is the parent\n");
 		    wait(&status);
-			exit(0);
 		}
 	}
 }
