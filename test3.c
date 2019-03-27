@@ -7,7 +7,8 @@
 
 int main(int argc, char **argv) {
     int status,  temp;
-	int l =1;
+	int* l =malloc(sizeof(int));
+	*l =1;
     int res = 1;
     int n = atoi(argv[1]);
     int k = atoi(argv[2]);
@@ -33,7 +34,7 @@ int main(int argc, char **argv) {
         else if (c[i] > 0) {
             close(fd1[0][0]);
             strcpy(input_str, "1");
-
+            *l=1;
             write(fd1[0][1], input_str, strlen(input_str) + 1);
             close(fd1[0][1]);
 
@@ -42,33 +43,33 @@ int main(int argc, char **argv) {
 
             // child process
         else {
-            while (l <= k) {
-                     printf("This is child %d , l is %d \n",i,l);
-                     if(i==1 && l!=1){ 
+            while ((*l) <= k) {
+                     if(i==1 && (*l)!=1){ 
                         close(fd1[n + 1][1]);
                         char my_str[100];
                         read(fd1[n + 1][0], my_str, 100);
+						printf("This is child %d , l is %d \n",i,(*l));
                         temp = atoi(my_str); //string->int
 						printf("This is temp (the int from the read string) %d \n",temp);
-                        res = temp * l;
+                        res = temp * (*l);
                         close(fd1[n + 1][0]);
                     }
 					else {
                         close(fd1[i][1]);
                         char my_str[100];
                         read(fd1[i][0], my_str, 100);
+						printf("This is child %d , l is %d \n",i,(*l));
                         temp = atoi(my_str); //string->int
 						printf("This is temp (the int from the read string) %d \n",temp);
-                        res = temp * l;
+                        res = temp * (*l);
                         close(fd1[i][0]);
 
                     }
-                    l++;
+                    (*l)++;
                     close(fd1[i][0]);
-					printf("the res as an int is %d \n", res);
                     sprintf(input_str, "%d", res);
-					printf("Now the res as a string is %s \n", input_str);
                     write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
+					printf("the res as an int is %d \n", res);
                     close(fd1[i + 1][1]);
               
             }
