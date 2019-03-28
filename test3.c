@@ -1,9 +1,9 @@
-#include < stdio.h > 
-#include < stdlib.h > 
-#include < unistd.h > 
-#include < sys / types.h > 
-#include < string.h > 
-#include < sys / wait.h >
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include <string.h> 
+#include <sys/wait.h>
 
 int main(int argc, char **argv) {
     int status, temp;
@@ -47,21 +47,30 @@ int main(int argc, char **argv) {
             int counter = i + 1; //topikos metritis , gia pollaplasiasmo
             while (counter <= k) {
                 char my_str[100];
+				/*if(i==1 && counter!=1){ //problem. me to sygxronismo 
+					close(fd1[n][1]);
+                    read(fd1[n][0], my_str, 100);
+				}*/
+				//else{
                 close(fd1[i][1]);
                 read(fd1[i][0], my_str, 100);
+				//}
                 temp = atoi(my_str); //string->int
                 printf("This is child %d \n", i);
-                printf("This is prev reasult %d \n", temp);
+                printf("This is prev result %d \n", temp);
                 res = temp * counter;
-
+                printf("the res as an int is %d \n", res);
                 sprintf(input_str, "%d", res);
-                if (i == n - 1) {
-                    close(fd1[0][0]);
-                    write(fd1[0][1], input_str, strlen(input_str) + 1);
-                } else {
-                    close(fd1[i + 1][0]);
-                    write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
-                }
+               /* edw paizei thema oti kollaei sto n-1 sto write, otan dhladh paei na ksanaxrisimopoiisei to fd1[0][1], ftaeia pou allazei to zeugos tou pipe h genika h epanaxrisimopoihsh?
+				if(i==n-1){
+					close(fd1[0][0]);
+					write(fd1[0][1], input_str, strlen(input_str)+1);
+				}*/
+				//else{
+                close(fd1[i + 1][0]);
+                write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
+				//}
+                
                 printf("the res as a string is %s \n", input_str);
                 counter = counter + n;
             }
