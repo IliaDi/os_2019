@@ -7,11 +7,11 @@
 
 int main(int argc, char **argv) {
     int status,  temp;
-	int* l =malloc(sizeof(int));
-	*l =1;
-    int res = 1;
+    char count[12]; //counter
     int n = atoi(argv[1]);
     int k = atoi(argv[2]);
+    
+    int res = 1;
     pid_t c[n];
     int fd1[n + 1][2];
     for (int i = 0; i <= n; i++) {
@@ -32,47 +32,39 @@ int main(int argc, char **argv) {
 
             // Parent process
         else if (c[i] > 0) {
+            if(i==0){
             close(fd1[0][0]);
             strcpy(input_str, "1");
-            *l=1;
             write(fd1[0][1], input_str, strlen(input_str) + 1);
             close(fd1[0][1]);
+            printf("This is the father the first time\n"); 
+            }
 
             wait(&status);
         }
 
             // child process
-        else {
-            while ((*l) <= k) {
-                     if(i==1 && (*l)!=1){ 
-                        close(fd1[n + 1][1]);
+        else {   int counter=i+1; //topikos metritis , gia pollaplasiasmo
+                    while(counter<=k){		
                         char my_str[100];
-                        read(fd1[n + 1][0], my_str, 100);
-						printf("This is child %d , l is %d \n",i,(*l));
-                        temp = atoi(my_str); //string->int
-						printf("This is temp (the int from the read string) %d \n",temp);
-                        res = temp * (*l);
-                        close(fd1[n + 1][0]);
-                    }
-					else {
-                        close(fd1[i][1]);
-                        char my_str[100];
+						close(fd1[i][1]);
                         read(fd1[i][0], my_str, 100);
-						printf("This is child %d , l is %d \n",i,(*l));
                         temp = atoi(my_str); //string->int
+						printf("This is child %d \n" ,i);    
 						printf("This is temp (the int from the read string) %d \n",temp);
-                        res = temp * (*l);
-                        close(fd1[i][0]);
-
-                    }
-                    (*l)++;
-                    close(fd1[i][0]);
+                        res = temp * counter;              
+                   
                     sprintf(input_str, "%d", res);
-                    write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
+					if(i==n-1){
+					close(fd1[0][0]);
+                    write(fd1[0][1], input_str, strlen(input_str) + 1);}
+					else{close(fd1[i+1][0]);
+                    write(fd1[i + 1][1], input_str, strlen(input_str) + 1);}
 					printf("the res as an int is %d \n", res);
-                    close(fd1[i + 1][1]);
+					counter=counter+n;
+					}
               
-            }
+            
 			exit(0);
         }
     }
