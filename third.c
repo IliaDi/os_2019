@@ -1,8 +1,3 @@
-//ο πατέρας δημιουργεί n παιδιά (n , k είσοδος προγρ.) k: ακέραιος θέλω να υπολογίσω το k!
-//ο πατέρας στέλνει χ=1 στην πρώτη και κυκλικά κάνουν 1 πολλαπλασιασμό το κάθε παιδί χ*(κ) Το κ αυξάνεται σε κάθε βήμα και δίνουν(ΓΡΑΦΟΥΝ) το αποτέλεσμα χ' στο επόμενο παιδί (1->2->3->4->1...) αυτό θα γίνει k φορές 
-//άρα έχω λούπα κ φορές (ΑΠΟ 1 ΜΕΧΡΙ Κ) για να πάει από παιδί σε παιδί
-//η επικοινωνία μέσω διοχετεύσεων (named pipes)
-
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <unistd.h> 
@@ -10,82 +5,79 @@
 #include <string.h> 
 #include <sys/wait.h>
 
+
 int main(int argc, char **argv) {
-    int status, temp;
-    char count[12]; //counter
+    int status,result, counter,i;
     int n = atoi(argv[1]);
     int k = atoi(argv[2]);
-
-    int res = 1;
+	int pipearray[2*n];
+	for(i=0; i<n; i++){
+		pipe(pipearray+2*i);
+	}
+	int parraycounter[2*n];
+	for(i=0; i<n; i++){
+		pipe(parraycounter+2*i);
+	}
     pid_t c[n];
-    int fd1[n+1 ][2];
-    for (int i = 0; i <=n; i++) {
-        if (pipe(fd1[i]) == -1) {
-            fprintf(stderr, "Pipe Failed");
-            return 1;
-        } //pd[i][0]: read , pd[i][1]: write
-    }
-    char input_str[100];
 
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         c[i] = fork();
 
         if (c[i] < 0) {
             fprintf(stderr, "fork Failed");
             return 1;
         }
-
-            // Parent process
-        else if (c[i] > 0) {
-			int index=i+1;
-            if (index == 1) {
-                close(fd1[n][0]);
-                strcpy(input_str, "1");
-                write(fd1[n][1], input_str, strlen(input_str) + 1);
-                printf("This is the father the first time\n");
-				index++;
-            }
-
-            wait(&status);
-        }
-
             // child process
-        else {
-			int counter = i + 1; //topikos metritis , gia pollaplasiasmo
-            if (counter <= k) {
-                char my_str[100];
-				if(counter==1){ //edw thema. kollaei k perimenei meta to prwto
-					close(fd1[n][1]);
-                read(fd1[n][0], my_str, 100);
-				close(fd1[n][0]); 
+        else if(c[i]==0) {
+			while(counter!=k){
+				close(pipearray[i*2+1]);
+				read(pipearray[i*2], &result, sizeof(result));
+				close(parraycounter[i*2+1]);
+				read(parraycounter[i*2], &counter, sizeof(counter));
+				counter++;
+				result=result*counter;
+				int temp = result/counter;
+				if(i==0){
+					printf("H C1 diavazei %d apo ton patera grafei %d sthn C%d\n", temp,result,i+2);
+					}
+				else if(i==(n-1)){
+					printf("H C%d diavazei %d apo C%d grafei %d sthn C1\n", i+1, temp,i ,result);
+					}
+				else{
+					printf("H C%d diavazei %d apo C%d grafei %d sthn C%d\n", i+1, temp,i ,result,i+2);
+				}
+				if(counter==k){
+					exit(0);
+				}
+				else if (i==(n-1 )){
+					close(pipearray[0]);
+					write(pipearray[1],&result, sizeof(result));
+					close(parraycounter[0]);
+					write(parraycounter[1], &counter, sizeof(counter));
 				}
 				else{
-                close(fd1[i][1]);
-                read(fd1[i][0], my_str, 100);
-				close(fd1[i][0]);  //ama fygei auto kollaei
+					close(pipearray[i*2+2]);
+					write(pipearray[i*2+3],&result, sizeof(result));
+					close(parraycounter[i*2+2]);
+					write(parraycounter[i*2+3], &counter, sizeof(counter));
 				}
-                temp = atoi(my_str); //string->int
-                printf("This is child %d \n", i);
-                printf("This is prev result %d \n", temp);
-                res = temp * counter;
-                sprintf(input_str, "%d", res);
-			   
-				if(i==n-1){
-					close(fd1[0][0]);
-					write(fd1[0][1], input_str, strlen(input_str)+1);
-				
-				}
-				else{
-                close(fd1[i + 1][0]);
-                write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
-				}
-                
-                printf("the res as a string is %s \n", input_str);
-                counter = counter + n;
-            }
-		   
-
-           exit(0);
+			}
+			
+            exit(0);
         }
+		//father 
+		else if((c[i]>0) && (i==n-1)){
+			result=1;
+			counter=0;
+			close(pipearray[0]);
+			write(pipearray[1], &result, sizeof(result));
+			close(parraycounter[0]);
+			write(parraycounter[1],&counter, sizeof(counter));
+			
+			wait(NULL);
+			exit(0);
+			
+		}
 	}
+	return 0;
 }
