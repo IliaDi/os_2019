@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
 
     int res = 1;
     pid_t c[n];
-    int fd1[n ][2];
-    for (int i = 0; i  n; i++) {
+    int fd1[n+1 ][2];
+    for (int i = 0; i <=n; i++) {
         if (pipe(fd1[i]) == -1) {
             fprintf(stderr, "Pipe Failed");
             return 1;
@@ -37,12 +37,13 @@ int main(int argc, char **argv) {
 
             // Parent process
         else if (c[i] > 0) {
-            if (i == 0) {
-                close(fd1[0][0]);
+			int index=i+1;
+            if (index == 1) {
+                close(fd1[n][0]);
                 strcpy(input_str, "1");
-                write(fd1[0][1], input_str, strlen(input_str) + 1);
-				close(fd1[0][1]);
+                write(fd1[n][1], input_str, strlen(input_str) + 1);
                 printf("This is the father the first time\n");
+				index++;
             }
 
             wait(&status);
@@ -50,14 +51,19 @@ int main(int argc, char **argv) {
 
             // child process
         else {
-               // mperdeuetai sth loopa otan k>n , DEN PETYXAINEI O SYNGRONISMOS
 			int counter = i + 1; //topikos metritis , gia pollaplasiasmo
-            while (counter <= k) {
+            if (counter <= k) {
                 char my_str[100];
+				if(counter==1){ //edw thema. kollaei k perimenei meta to prwto
+					close(fd1[n][1]);
+                read(fd1[n][0], my_str, 100);
+				close(fd1[n][0]); 
+				}
+				else{
                 close(fd1[i][1]);
                 read(fd1[i][0], my_str, 100);
-				close(fd1[i][0]); //αν λείπει αυτό , τότε "κολλάει αφού διαβάσει και γράψει το παιδί 0 , αλλά και τα άλλα close τα δευτερα , αν λείπουν κολλάει στην τελευταία επανάληψη και δεν μπορεί να γράψει
-				
+				close(fd1[i][0]);  //ama fygei auto kollaei
+				}
                 temp = atoi(my_str); //string->int
                 printf("This is child %d \n", i);
                 printf("This is prev result %d \n", temp);
@@ -67,17 +73,19 @@ int main(int argc, char **argv) {
 				if(i==n-1){
 					close(fd1[0][0]);
 					write(fd1[0][1], input_str, strlen(input_str)+1);
-					close(fd1[0][1]);
+				
 				}
 				else{
                 close(fd1[i + 1][0]);
                 write(fd1[i + 1][1], input_str, strlen(input_str) + 1);
-				close(fd1[i+1][1]);
 				}
                 
                 printf("the res as a string is %s \n", input_str);
                 counter = counter + n;
             }
+		   
 
-            exit(0);
+           exit(0);
         }
+	}
+}
