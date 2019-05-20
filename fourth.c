@@ -21,54 +21,37 @@ int main(int argc, char **argv) {
     c[0] = fork();
     if (c[0] < 0) { printf("fork produced error"); }
     else if (c[0] == 0) {//c1 code
-        my_wait();
 		critical(1, getpid() );
-		my_signal();
 		non_critical(1, getpid() );
 		non_critical(1, getpid() );
-		my_wait();
 		critical(1, getpid() );
-		my_signal();
 		non_critical(1, getpid() );
-		my_wait();
 		critical(1, getpid() );
-		my_signal();
         exit(0);
     } else {
         c[1] = fork();
         if (c[1] < 0) { printf("fork produced error"); }
         else if (c[1] == 0) {//c2 code
 		    non_critical(2, getpid() );
-            my_wait();
 		    critical(2, getpid() );
-		    my_signal();
 			non_critical(2, getpid() );
-            my_wait();
 		    critical(2, getpid() );
-		    my_signal();
 			non_critical(2, getpid() );
-            my_wait();
 		    critical(2, getpid() );
-		    my_signal();
             exit(0);
         } else {
             c[2] = fork();
             if (c[2] < 0) { printf("fork produced error"); }
             else if (c[2] == 0) {//c3 code
-                my_wait();
 		        critical(3, getpid() );
-		        my_signal();
 				non_critical(3, getpid() );
-				my_wait();
 		        critical(3, getpid() );
-		        my_signal();
 				non_critical(3, getpid() );
-				my_wait();
 		        critical(3, getpid() );
-		        my_signal();
 				non_critical(3, getpid() );
                 exit(0);
             } else { //F
+			    my_signal();
                 wait(&status);
                 exit(0);
             }
@@ -96,17 +79,15 @@ void my_signal(){
 }
 
 void critical(int i, pid_t me){
+	my_wait();
 	for(int j=0; j<5; j++){
-		printf("Child%d %d executes a critical section", i, me);
+		printf("Child%d %d executes a critical section\n", i, me);
 	}
+	my_signal();
 }
 
 void non_critical(int i, pid_t me){
 	for(int j=0; j<7; j++){
-		int temp;
-		read(s_pipe[0], &temp, sizeof(temp));
-		while(temp==0){
-		printf("Child%d %d executes a non critical section", i, me);
-		read(s_pipe[0], &temp, sizeof(temp));}
+		printf("Child%d %d executes a non critical section\n", i, me);
 	}
 }
