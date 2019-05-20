@@ -82,19 +82,17 @@ int main(int argc, char **argv) {
 
 }
 void my_wait(){
-	int res=0;
-	while (res<=0){
-	close(s_pipe[1]);
-	read(s_pipe[0], &res, sizeof(res));}
-	res--;
-	close(s_pipe[1]);
-	write(s_pipe[0], res, sizeof(res));
+	int res=1;
+	while (res!=0){
+	read(s_pipe[0], &res, sizeof(res));
+	}
+	res=1;
+	write(s_pipe[1], res, sizeof(res));
 	
 }
 void my_signal(){
-	int x=1;
-	close(s_pipe[1]);
-	write(s_pipe[0], x, sizeof(x));
+	int x=0;
+	write(s_pipe[1], x, sizeof(x));
 }
 
 void critical(int i, pid_t me){
@@ -105,6 +103,10 @@ void critical(int i, pid_t me){
 
 void non_critical(int i, pid_t me){
 	for(int j=0; j<7; j++){
+		int temp;
+		read(s_pipe[0], &temp, sizeof(temp));
+		while(temp==0){
 		printf("Child%d %d executes a non critical section", i, me);
+		read(s_pipe[0], &temp, sizeof(temp));}
 	}
 }
