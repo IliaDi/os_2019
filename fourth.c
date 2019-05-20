@@ -6,24 +6,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <semaphore.h> 
 //prepei na ulopoiisoume tis wait kai signal twn semaphores me pipes
-typedef struct {
- int value;
- queue_t waiting;
-} Semaphore; 
+
 int s_pipe[2];
 void critical(int, pid_t);
 void non_critical(int, pid_t);
-void my_init(Semaphore*, int); //dimiourgei pipe upotithetai, arxikopoiei kai value
 void my_wait();
 void my_signal();
 
 int main(int argc, char **argv) {
     int status;
     pid_t c[3];
-    Semaphore *se; //enan simaforo theloume?
-    Semaphore* s=my_init(se, 1 ); //xm
+	pipe( s_pipe );
     c[0] = fork();
     if (c[0] < 0) { printf("fork produced error"); }
     else if (c[0] == 0) {//c1 code
@@ -86,14 +80,6 @@ int main(int argc, char **argv) {
         exit(0);
     }
 
-}
-Semaphore* my_init(Semaphore* se, int x){
-	pipe(s_pipe[0]);
-	pipe(s_pipe[1]);
-	close(s_pipe[1]);
-	write(s_pipe[0], x, sizeof(x));
-	se.value=x;
-	return se;
 }
 void my_wait(){
 	int res=0;
