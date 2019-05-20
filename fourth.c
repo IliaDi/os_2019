@@ -10,20 +10,19 @@
 //prepei na ulopoiisoume tis wait kai signal twn semaphores me pipes
 typedef struct {
  int value;
- queue_t waiting;
 } Semaphore; 
+
 int s_pipe[2];
 void critical(int, pid_t);
 void non_critical(int, pid_t);
-void my_init(Semaphore*, int); //dimiourgei pipe upotithetai, arxikopoiei kai value
+void my_init(int); 
 void my_wait();
 void my_signal();
 
 int main(int argc, char **argv) {
     int status;
+	pipe(s_pipe);
     pid_t c[3];
-    Semaphore *se; //enan simaforo theloume?
-    Semaphore* s=my_init(se, 1 ); //xm
     c[0] = fork();
     if (c[0] < 0) { printf("fork produced error"); }
     else if (c[0] == 0) {//c1 code
@@ -75,50 +74,47 @@ int main(int argc, char **argv) {
 				non_critical(3, getpid() );
                 exit(0);
             } else { //F
-
+			    my_init( 1 ); 
                 wait(&status);
                 exit(0);
             }
-            wait(&status);
+			 wait(&status);
             exit(0);
         }
-        wait(&status);
+		 wait(&status);
         exit(0);
     }
+	
+	return 0;
 
 }
-Semaphore* my_init(Semaphore* se, int x){
-	pipe(s_pipe[0]);
-	pipe(s_pipe[1]);
-	close(s_pipe[1]);
-	write(s_pipe[0], x, sizeof(x));
-	se.value=x;
-	return se;
+void my_init(int x){
+	close(s_pipe[0]);
+	write(s_pipe[1],  &x, sizeof(x));
 }
 void my_wait(){
 	int res=0;
 	while (res<=0){
-	close(s_pipe[1]);
 	read(s_pipe[0], &res, sizeof(res));}
-	res--;
-	close(s_pipe[1]);
-	write(s_pipe[0], res, sizeof(res));
+	res=0;
+	close(s_pipe[0]);
+	write(s_pipe[1], &res, sizeof(res));
 	
 }
 void my_signal(){
 	int x=1;
-	close(s_pipe[1]);
-	write(s_pipe[0], x, sizeof(x));
+	close(s_pipe[0]);
+	write(s_pipe[1], &x, sizeof(x));
 }
 
 void critical(int i, pid_t me){
 	for(int j=0; j<5; j++){
-		printf("Child%d %d executes a critical section", i, me);
+		printf("Child%d %d executes a critical section \n", i, me);
 	}
 }
 
 void non_critical(int i, pid_t me){
 	for(int j=0; j<7; j++){
-		printf("Child%d %d executes a non critical section", i, me);
+		printf("Child%d %d executes a non critical section \n", i, me);
 	}
 }
