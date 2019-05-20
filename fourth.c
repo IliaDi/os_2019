@@ -69,7 +69,6 @@ int main(int argc, char **argv) {
 				non_critical(3, getpid() );
                 exit(0);
             } else { //F
-
                 wait(&status);
                 exit(0);
             }
@@ -79,6 +78,7 @@ int main(int argc, char **argv) {
         wait(&status);
         exit(0);
     }
+	return 0;
 
 }
 void my_wait(){
@@ -87,12 +87,12 @@ void my_wait(){
 	read(s_pipe[0], &res, sizeof(res));
 	}
 	res=1;
-	write(s_pipe[1], res, sizeof(res));
+	write(s_pipe[1], &res, sizeof(res));
 	
 }
 void my_signal(){
 	int x=0;
-	write(s_pipe[1], x, sizeof(x));
+	write(s_pipe[1], &x, sizeof(x));
 }
 
 void critical(int i, pid_t me){
