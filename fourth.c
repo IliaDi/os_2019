@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-//prepei na ulopoiisoume tis wait kai signal twn semaphores me pipes
 
 int s_pipe[2];
 void critical(int, pid_t);
